@@ -37,7 +37,7 @@ lbl.pack()
 
 # Build TouchBar
 def action(button):
-print ("Button Pressed !")
+    print ("Button Pressed !")
 
 btn = PyTouchBar.items.Button(title="Button", action=action)
 PyTouchBar.set_touchbar([btn])
