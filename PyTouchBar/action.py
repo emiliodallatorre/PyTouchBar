@@ -8,8 +8,8 @@ import traceback
 import warnings
 
 import objc
-from Foundation import *
-from AppKit import *
+from Foundation import NSObject
+from AppKit import NSSliderTouchBarItem
 from PyObjCTools import AppHelper
 import Cocoa
 

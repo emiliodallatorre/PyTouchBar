@@ -8,8 +8,8 @@ import traceback
 import warnings
 
 import objc
-from Foundation import *
-from AppKit import *
+from Foundation import NSObject
+import AppKit
 from PyObjCTools import AppHelper
 import Cocoa
 
@@ -29,7 +29,7 @@ class TouchBarItem(TouchBarBaseItem):
 		self.id = kwargs.get('id', str(uuid.uuid4()))
 	
 	def makeItem(self):
-		item = NSCustomTouchBarItem.alloc().initWithIdentifier_(self.id)
+		item = AppKit.NSCustomTouchBarItem.alloc().initWithIdentifier_(self.id)
 		return item
 	
 	
@@ -91,7 +91,7 @@ class Popover(TouchBarItem):
 		
 		
 		self.items = items
-		self.item = NSPopoverTouchBarItem.alloc().init()
+		self.item = AppKit.NSPopoverTouchBarItem.alloc().init()
 		
 		self.customization_label = kwargs.get('customization_label', 'Popover')
 		self.customization_mode = kwargs.get('customization_mode', 0)
@@ -102,7 +102,7 @@ class Popover(TouchBarItem):
 		
 		#instanciedItems = list(map(lambda item: item.makeItem(), self.items))
 		
-		self.item = NSPopoverTouchBarItem.alloc().initWithIdentifier_(self.id)
+		self.item = AppKit.NSPopoverTouchBarItem.alloc().initWithIdentifier_(self.id)
 		self.item.setShowsCloseButton_(self.shows_close_button)
 		
 		self.reload()
@@ -118,8 +118,8 @@ class Popover(TouchBarItem):
 	def reload(self):
 		
 		
-		self.secondaryTouchBar = NSTouchBar.alloc().init()
-		self.holdTouchbar = NSTouchBar.alloc().init()
+		self.secondaryTouchBar = AppKit.NSTouchBar.alloc().init()
+		self.holdTouchbar = AppKit.NSTouchBar.alloc().init()
 		self.secondaryTouchBar.setDelegate_(main.tbdelegate)
 		self.holdTouchbar.setDelegate_(main.tbdelegate)
 		
@@ -156,7 +156,7 @@ class Group(TouchBarItem):
 	def makeItem(self):
 		instanciedItems = list(map(lambda item: item.makeItem(), self.items))
 		
-		self.item = NSGroupTouchBarItem.groupItemWithIdentifier_items_(self.id, instanciedItems)
+		self.item = AppKit.NSGroupTouchBarItem.groupItemWithIdentifier_items_(self.id, instanciedItems)
 		self.item.setCustomizationLabel_(self.customization_label)
 		return self.item
 	
@@ -165,7 +165,7 @@ class CustomNSView(TouchBarItem):
 	def __init__(self, view):
 		self.id = str(uuid.uuid4())
 		
-		self.item = NSCustomTouchBarItem.alloc().initWithIdentifier_(self.id)
+		self.item = AppKit.NSCustomTouchBarItem.alloc().initWithIdentifier_(self.id)
 		self.item.setCustomizationLabel_("Custom View")
 		#self.item.view().addSubview_(view)
 		self.item.setView_(view)
@@ -202,12 +202,12 @@ class Label(TouchBarItem):
 		
 		
 	def makeItem(self):
-		item = NSCustomTouchBarItem.alloc().initWithIdentifier_(self.id)
+		item = AppKit.NSCustomTouchBarItem.alloc().initWithIdentifier_(self.id)
 		
-		self.label = NSTextField.labelWithString_(self.textBase)
-		self.label.setTextColor_(NSColor.colorWithRed_green_blue_alpha_( * self.text_color_))
+		self.label = AppKit.NSTextField.labelWithString_(self.textBase)
+		self.label.setTextColor_(AppKit.NSColor.colorWithRed_green_blue_alpha_( * self.text_color_))
 		self.label.setAlignment_(self.alignment_)
-		font = NSFont.fontWithName_size_(self.font_name_,self.font_size_)
+		font = AppKit.NSFont.fontWithName_size_(self.font_name_,self.font_size_)
 		
 		item.setView_(self.label)
 		item.setCustomizationLabel_(self.customization_label)
@@ -230,7 +230,7 @@ class Label(TouchBarItem):
 		return self.text_color_
 	
 	def textColorSetter(self, newValue):
-		self.label.setTextColor_(NSColor.colorWithRed_green_blue_alpha_( * newValue))
+		self.label.setTextColor_(AppKit.NSColor.colorWithRed_green_blue_alpha_( * newValue))
 		self.text_color_ = newValue
 		
 	text_color = property(textColorGetter, textColorSetter)
@@ -240,7 +240,7 @@ class Label(TouchBarItem):
 		return self.font_name_
 	
 	def fontSetter(self, newValue):
-		font = NSFont.fontWithName_size_(newValue,newValue)
+		font = AppKit.NSFont.fontWithName_size_(newValue,newValue)
 		self.label.setFont_(font)
 		self.font_name_ = newValue
 		
@@ -251,7 +251,7 @@ class Label(TouchBarItem):
 		return self.font_size_
 	
 	def fontSizeSetter(self, newValue):
-		font = NSFont.fontWithName_size_(self.font_name_,newValue)
+		font = AppKit.NSFont.fontWithName_size_(self.font_name_,newValue)
 		self.label.setFont_(font)
 		self.font_size_ = newValue
 		
@@ -309,12 +309,12 @@ class Button(TouchBarItem):
 		
 	def makeItem(self):
 		
-		item = NSCustomTouchBarItem.alloc().initWithIdentifier_(self.id)
+		item = AppKit.NSCustomTouchBarItem.alloc().initWithIdentifier_(self.id)
 		title = self.title_ if self.title_ else ''
-		self.button = NSButton.buttonWithTitle_target_action_(title, self.actionManager ,"buttonPressed:")
+		self.button = AppKit.NSButton.buttonWithTitle_target_action_(title, self.actionManager ,"buttonPressed:")
 		
 		if self.image_:
-			image = NSImage.alloc().initByReferencingFile_(os.path.realpath(self.image_))
+			image = AppKit.NSImage.alloc().initByReferencingFile_(os.path.realpath(self.image_))
 			self.button.setImage_(image)
 			
 		self.button.setImagePosition_(self.image_position)
@@ -324,7 +324,7 @@ class Button(TouchBarItem):
 		main.buttonIds[str(id(self))] = self
 		
 		if self.color_:
-			self.button.setBezelColor_(NSColor.colorWithRed_green_blue_alpha_( * self.color_))
+			self.button.setBezelColor_(AppKit.NSColor.colorWithRed_green_blue_alpha_( * self.color_))
 			
 		item.setCustomizationLabel_(self.customization_label)
 		item.setView_(self.button)
@@ -347,7 +347,7 @@ class Button(TouchBarItem):
 		return self.color_
 	
 	def colorSetter(self, newValue):
-		self.button.setBezelColor_(NSColor.colorWithRed_green_blue_alpha_( * newValue))
+		self.button.setBezelColor_(AppKit.NSColor.colorWithRed_green_blue_alpha_( * newValue))
 		self.color_ = newValue
 		
 	color = property(colorGetter, colorSetter)
@@ -357,7 +357,7 @@ class Button(TouchBarItem):
 		return self.image_
 	
 	def imageSetter(self, newValue):
-		image = NSImage.alloc().initByReferencingFile_(os.path.realpath(newValue))
+		image = AppKit.NSImage.alloc().initByReferencingFile_(os.path.realpath(newValue))
 		self.button.setImage_(image)
 		self.image_ = newValue
 		
@@ -400,7 +400,7 @@ class SegmentedControls(TouchBarItem):
 			imageName = kwargs.get('image', None)
 			
 			if imageName:
-				self.image = NSImage.alloc().initByReferencingFile_(os.path.realpath(imageName))
+				self.image = AppKit.NSImage.alloc().initByReferencingFile_(os.path.realpath(imageName))
 			else:
 				self.image = None
 				
@@ -477,10 +477,10 @@ class SegmentedControls(TouchBarItem):
 	def makeItem(self):
 		
 		
-		customItem = NSCustomTouchBarItem.alloc().initWithIdentifier_(self.id)
+		customItem = AppKit.NSCustomTouchBarItem.alloc().initWithIdentifier_(self.id)
 		self.initializedControls = []
 		
-		segmentedControl = NSSegmentedControl.segmentedControlWithLabels_trackingMode_target_action_([], self.type, self.actionManager ,"buttonPressed:")
+		segmentedControl = AppKit.NSSegmentedControl.segmentedControlWithLabels_trackingMode_target_action_([], self.type, self.actionManager ,"buttonPressed:")
 		self.NSSegmentedControl = segmentedControl
 		segmentedControl.setSegmentCount_(len(self.controls))
 		
@@ -573,14 +573,14 @@ class ColorPicker(TouchBarItem):
 			self.item
 		except:
 			if self.type == ColorPicker.Type.color:
-				self.item = NSColorPickerTouchBarItem.colorPickerWithIdentifier_(self.id)
+				self.item = AppKit.NSColorPickerTouchBarItem.colorPickerWithIdentifier_(self.id)
 			elif self.type == ColorPicker.Type.text:
-				self.item = NSColorPickerTouchBarItem.textColorPickerWithIdentifier_(self.id)
+				self.item = AppKit.NSColorPickerTouchBarItem.textColorPickerWithIdentifier_(self.id)
 			elif self.type == ColorPicker.Type.stroke:
-				self.item = NSColorPickerTouchBarItem.strokeColorPickerWithIdentifier_(self.id)
+				self.item = AppKit.NSColorPickerTouchBarItem.strokeColorPickerWithIdentifier_(self.id)
 			elif self.type == ColorPicker.Type.image:
-				image = NSImage.alloc().initByReferencingFile_(os.path.realpath(self.image))
-				self.item = NSColorPickerTouchBarItem.colorPickerWithIdentifier_buttonImage_(self.id, image)
+				image = AppKit.NSImage.alloc().initByReferencingFile_(os.path.realpath(self.image))
+				self.item = AppKit.NSColorPickerTouchBarItem.colorPickerWithIdentifier_buttonImage_(self.id, image)
 				
 				
 		self.item.setShowsAlpha_(self.alpha)
@@ -603,7 +603,7 @@ class ColorPicker(TouchBarItem):
 		return (red, green, blue, alpha)
 	
 	def setColor(self, color):
-		color = NSColor.NSColor.colorWithRed_green_blue_alpha_( * color)
+		color = AppKit.NSColor.NSColor.colorWithRed_green_blue_alpha_( * color)
 		self.item.setColor_(color)
 		
 	color = property(getColor, setColor)
@@ -633,7 +633,7 @@ class Slider(TouchBarItem):
 		
 		self.color = kwargs.get('color', None)
 		
-		self.item = NSSliderTouchBarItem.alloc().initWithIdentifier_(self.id)
+		self.item = AppKit.NSSliderTouchBarItem.alloc().initWithIdentifier_(self.id)
 		
 		self.customization_label = kwargs.get('customization_label', 'Slider')
 		self.customization_mode = kwargs.get('customization_mode', 0)
@@ -647,7 +647,7 @@ class Slider(TouchBarItem):
 			self.setValue(self.defaultValue)
 			
 		if self.color:	
-			self.item.slider().setTrackFillColor_(NSColor.colorWithRed_green_blue_alpha_( * self.color))
+			self.item.slider().setTrackFillColor_(AppKit.NSColor.colorWithRed_green_blue_alpha_( * self.color))
 			
 		self.item.setTarget_(self.actionManager)
 		self.item.setAction_("buttonPressed:")
@@ -697,7 +697,7 @@ class Stepper(TouchBarItem):
 		self.defaultMax = kwargs.get('max', 10)
 		self.defaultStep = kwargs.get('step', 1)
 		
-		self.item = NSStepperTouchBarItem.alloc().initWithIdentifier_(self.id)
+		self.item = AppKit.NSStepperTouchBarItem.alloc().initWithIdentifier_(self.id)
 		self.item.setValue_(float(self.defaultValue))
 		self.item.setMinValue_(self.defaultMin)
 		self.item.setMaxValue_(self.defaultMax)

@@ -19,6 +19,33 @@ To install PyTouchBar, just copy-paste the following command into a terminal:
 
     pip install PyTouchBar
 
+## Example
+
+Here is a simple example displaying a window with a label, and displaying a button in the touchbar.
+
+```python
+from tkinter import *
+import PyTouchBar
+import AppKit
+
+root = Tk()
+PyTouchBar.prepare_tk_windows(root) # Tell PyTouchBar that the "root" window will have a TouchBar
+
+# Build Tkinter interface
+lbl = Label(root, text="Hello World")
+lbl.pack()
+
+# Build TouchBar
+def action(button):
+print ("Button Pressed !")
+
+btn = PyTouchBar.items.Button(title="Button", action=action)
+PyTouchBar.set_touchbar([btn])
+
+
+root.mainloop()
+```
+
 ## How to Use
 All documentation is included in the wiki
 

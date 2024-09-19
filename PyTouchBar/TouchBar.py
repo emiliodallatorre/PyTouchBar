@@ -10,8 +10,8 @@ import traceback
 import warnings
 
 import objc
-from Foundation import *
-from AppKit import *
+import Foundation
+import AppKit
 from PyObjCTools import AppHelper
 import Cocoa
 
@@ -41,7 +41,7 @@ customization_identifier = None
 	
 
 	
-class NSWindowControllerTBModified (NSWindowController):
+class NSWindowControllerTBModified (AppKit.NSWindowController):
 	'''
 	A NSWindowController that handle touchbar methods.
 	It will be applied to windows with the "prepare_window" functions.
@@ -53,7 +53,7 @@ class NSWindowControllerTBModified (NSWindowController):
 		if DEBUG_LEVEL == 1:
 			print ('TouchBar initializing') 
 			
-		tb = NSTouchBar.alloc().init()
+		tb = AppKit.NSTouchBar.alloc().init()
 		
 		#self.tbdelegate = TouchBarDelegate.alloc().init()
 		
@@ -80,7 +80,7 @@ class NSWindowControllerTBModified (NSWindowController):
 		
 	
 		
-class TouchBarDelegate(NSObject):
+class TouchBarDelegate(Foundation.NSObject):
 	'''
 	A TouchBarDelegate that will create and render touchbar from its content-list items's id
 	'''
@@ -115,7 +115,7 @@ def set_customization_identifier(identifier, menu = None):
 	customization_identifier = identifier
 	
 	if menu is not None:
-		NSApplication.sharedApplication().setAutomaticCustomizeTouchBarMenuItemEnabled_(menu)
+		AppKit.NSApplication.sharedApplication().setAutomaticCustomizeTouchBarMenuItemEnabled_(menu)
 	
 		
 		
@@ -153,7 +153,7 @@ def customize(sender = None):
 	Parameters:
 		sender (Any = None) : Sender of the action: will be passed to the ObjC method. (Not really useful, you should keep it None)
 	'''
-	NSApplication.sharedApplication().toggleTouchBarCustomizationPalette_(sender)
+	AppKit.lication.sharedApplication().toggleTouchBarCustomizationPalette_(sender)
 	
 	
 	
@@ -169,14 +169,9 @@ def notify(a):
 	global delegate, DEBUG_LEVEL
 	make_crash = False
 	
-	windows = NSApplication.sharedApplication().windows()
+	windows = AppKit.NSApplication.sharedApplication().windows()
 	for window in windows:
 		window_controllers.append(NSWindowControllerTBModified.alloc().initWithWindow_(window))
-		
-	if make_crash:
-		if DEBUG_LEVEL == 1:
-			print ('Making crash')
-		objc.informal_protocol('NSTouchBarProvider', selectors = [1]) # Make crash (don't know why, but it does.)
 	
 def reload_touchbar():
 	'''
@@ -207,7 +202,7 @@ def resetPreparedWindows():
 	'''
 	Clear touchbar from all windows
 	'''
-	windows = NSApplication.sharedApplication().windows()
+	windows = AppKit.NSApplication.sharedApplication().windows()
 	for window in windows:
 		window_controllers.append(NSWindowControllerTBModified.alloc().initWithWindow_(window))
 		
@@ -216,7 +211,7 @@ def prepare_pygame():
 		This function is needed to prepare Pygame window to "host" a touchbar.
 		Call this function before mainlooping the pygame.
 	'''
-	windows = NSApplication.sharedApplication().windows()
+	windows = AppKit.NSApplication.sharedApplication().windows()
 	for window in windows:
 		if window.windowController() == None:
 			window_controllers.append(NSWindowControllerTBModified.alloc().initWithWindow_(window))
@@ -225,7 +220,7 @@ def set_touchbar_pygame():
 	'''
 	WIP
 	'''
-	windows = NSApplication.sharedApplication().windows()
+	windows = AppKit.NSApplication.sharedApplication().windows()
 	for window in windows:
 		view = window.contentView().subviews()[0]
 
