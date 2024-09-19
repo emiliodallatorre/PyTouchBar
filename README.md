@@ -26,7 +26,6 @@ Here is a simple example displaying a window with a label, and displaying a butt
 ```python
 from tkinter import *
 import PyTouchBar
-import AppKit
 
 root = Tk()
 PyTouchBar.prepare_tk_windows(root) # Tell PyTouchBar that the "root" window will have a TouchBar
