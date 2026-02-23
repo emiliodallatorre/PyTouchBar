@@ -8,7 +8,7 @@ import traceback
 import warnings
 
 import objc
-from Foundation import NSObject
+from Foundation import NSObject, NSString
 import AppKit
 from PyObjCTools import AppHelper
 import Cocoa
