@@ -9,7 +9,7 @@ import warnings
 
 import objc
 from Foundation import NSObject, NSString
-from AppKit import *
+import AppKit
 from PyObjCTools import AppHelper
 import Cocoa
 
